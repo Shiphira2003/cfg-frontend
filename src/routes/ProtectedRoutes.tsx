@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/useAuth.ts";
+import { useAuth } from "../context/AuthContext.tsx";
 import type { ReactNode } from "react";
 
 type ProtectedRouteProps = {
@@ -14,7 +14,7 @@ export default function ProtectedRoute({
     const { user } = useAuth();
 
     if (!user) {
-        return <Navigate to="/login" />;
+        return <Navigate to="/auth/login" />;
     }
 
     if (roles && !roles.includes(user.role)) {

@@ -1,6 +1,13 @@
+import RegisterStudent from "./pages/RegisterStudent";
+import {Route, Routes} from "react-router-dom";
+import Login from "./pages/Login.tsx";
+
 function App() {
     return (
-        <h1>This is my work</h1>
+        <Routes>
+            <Route path="/register-student" element={<RegisterStudent />} />
+            <Route path="/auth/login" element={<Login />} />
+        </Routes>
     )
 }
 
