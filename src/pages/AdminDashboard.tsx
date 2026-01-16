@@ -184,18 +184,24 @@ export default function AdminDashboard() {
                                 ))}
                             </td>
                             <td className="border p-2 space-x-2">
-                                <button
-                                    className="bg-green-600 text-white px-2 py-1"
-                                    onClick={() => handleStatusChange(app.id, "APPROVED")}
-                                >
-                                    Approve
-                                </button>
-                                <button
-                                    className="bg-red-600 text-white px-2 py-1"
-                                    onClick={() => handleStatusChange(app.id, "REJECTED")}
-                                >
-                                    Reject
-                                </button>
+                                {app.status === "PENDING" && (
+                                    <>
+                                        <button
+                                            className="bg-green-600 text-white px-2 py-1"
+                                            onClick={() => handleStatusChange(app.id, "APPROVED")}
+                                        >
+                                            Approve
+                                        </button>
+
+                                        <button
+                                            className="bg-red-600 text-white px-2 py-1"
+                                            onClick={() => handleStatusChange(app.id, "REJECTED")}
+                                        >
+                                            Reject
+                                        </button>
+                                    </>
+                                )}
+
                                 <button
                                     className="bg-blue-600 text-white px-2 py-1"
                                     onClick={() => handleViewAuditLogs(app.id)}
@@ -203,6 +209,7 @@ export default function AdminDashboard() {
                                     Audit Logs
                                 </button>
                             </td>
+
                         </tr>
                     ))
                 ) : (
