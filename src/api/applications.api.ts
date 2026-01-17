@@ -5,5 +5,14 @@ export const getAuditLogs = async (applicationId: number) => {
         `/applications/${applicationId}/audit-logs`
     );
 
-    return res.data.audit_logs;
+    return res.data;
+};
+
+export const createApplication = async (data: FormData) => {
+    const res = await api.post("/applications", data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+    return res.data;
 };

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getApplications, updateApplicationStatus, getAuditLogs, registerAdmin } from "../api/admin.api";
+import { useNavigate } from "react-router-dom";
+import { getApplications, updateApplicationStatus, registerAdmin } from "../api/admin.api";
 
 type Application = {
     id: number;
@@ -18,12 +19,9 @@ type Application = {
 };
 
 export default function AdminDashboard() {
+    const navigate = useNavigate();
     const [applications, setApplications] = useState<Application[]>([]);
-    const [selectedAppId, setSelectedAppId] = useState<number | null>(null);
-    const [auditLogs, setAuditLogs] = useState<any[]>([]);
-    const [loadingLogs, setLoadingLogs] = useState(false);
     const [statusFilter, setStatusFilter] = useState<string>("PENDING");
-    const [logsError, setLogsError] = useState<string>("");
 
     // ----------------------------
     // Safe parser for document_url
@@ -114,22 +112,6 @@ export default function AdminDashboard() {
     // ----------------------------
     // View Audit Logs
     // ----------------------------
-    const handleViewAuditLogs = async (appId: number) => {
-        setSelectedAppId(appId);
-        setLoadingLogs(true);
-        setLogsError("");
-        try {
-            const res = await getAuditLogs(appId.toString());
-            console.log(`Audit logs for application ${appId}:`, res);
-            setAuditLogs(res.audit_logs || []);
-        } catch (err) {
-            console.error("Error fetching audit logs:", err);
-            setAuditLogs([]);
-            setLogsError("Failed to load audit logs.");
-        } finally {
-            setLoadingLogs(false);
-        }
-    };
 
     return (
         <div className="p-6">
@@ -202,12 +184,14 @@ export default function AdminDashboard() {
                                     </>
                                 )}
 
-                                <button
-                                    className="bg-blue-600 text-white px-2 py-1"
-                                    onClick={() => handleViewAuditLogs(app.id)}
-                                >
-                                    Audit Logs
-                                </button>
+                                {app.status === "APPROVED" && (
+                                    <button
+                                        className="bg-blue-600 text-white px-2 py-1"
+                                        onClick={() => navigate(`/admin/applications/${app.id}/audit-logs`)}
+                                    >
+                                        Audit Logs
+                                    </button>
+                                )}
                             </td>
 
                         </tr>
@@ -222,48 +206,6 @@ export default function AdminDashboard() {
                 </tbody>
             </table>
 
-            {/* Audit Logs */}
-            {selectedAppId && (
-                <div className="mt-6">
-                    <h2 className="text-xl font-semibold mb-2">Audit Logs for Application {selectedAppId}</h2>
-
-                    {loadingLogs && <p>Loading audit logs...</p>}
-                    {logsError && <p className="text-red-600">{logsError}</p>}
-
-                    {!loadingLogs && !logsError && (
-                        <table className="w-full border border-gray-300">
-                            <thead>
-                            <tr>
-                                <th className="border p-2">Admin</th>
-                                <th className="border p-2">Action</th>
-                                <th className="border p-2">Old Value</th>
-                                <th className="border p-2">New Value</th>
-                                <th className="border p-2">Time</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {auditLogs.length > 0 ? (
-                                auditLogs.map((log) => (
-                                    <tr key={log.id}>
-                                        <td className="border p-2">{log.admin_email}</td>
-                                        <td className="border p-2">{log.action}</td>
-                                        <td className="border p-2">{log.old_value}</td>
-                                        <td className="border p-2">{log.new_value}</td>
-                                        <td className="border p-2">{new Date(log.created_at).toLocaleString()}</td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan={5} className="border p-2 text-center">
-                                        No audit logs found
-                                    </td>
-                                </tr>
-                            )}
-                            </tbody>
-                        </table>
-                    )}
-                </div>
-            )}
 
             {/* Register Admin Section */}
             <div className="mt-6 p-4 border rounded">
