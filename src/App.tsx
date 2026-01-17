@@ -11,7 +11,10 @@ import ProtectedStudentRoute from "./routes/ProtectedStudentRoute";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import MyApplications from "./pages/student/MyApplications";
 import Profile from "./pages/student/Profile";
+import AdminLayout from "./layouts/AdminLayout";
 import { Navigate } from "react-router-dom";
+
+// ... existing imports
 
 function App() {
     return (
@@ -19,11 +22,15 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/register-student" element={<RegisterStudent />} />
             <Route path="/auth/login" element={<Login />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route
-                path="/admin/applications/:id/audit-logs"
-                element={<ApplicationAuditLogs />}
-            />
+
+            {/* Admin Portal Routes */}
+            <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<AdminDashboard />} />
+                <Route
+                    path="applications/:id/audit-logs"
+                    element={<ApplicationAuditLogs />}
+                />
+            </Route>
 
             {/* Student Portal Routes */}
             <Route element={<ProtectedStudentRoute />}>

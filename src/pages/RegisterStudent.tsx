@@ -1,7 +1,10 @@
 // src/pages/RegisterStudent.tsx
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { registerStudent } from "../api/student.api";
+import { Card } from "../components/Card";
+import { Input } from "../components/Input";
+import { Button } from "../components/Button";
 
 import axios from "axios";
 
@@ -50,9 +53,7 @@ export default function RegisterStudent() {
         setError(null);
 
         try {
-            const data = await registerStudent(form);
-            console.log("Registration success:", data);
-            alert("Student registered successfully!");
+            await registerStudent(form);
             navigate("/auth/login"); // redirect to login
         } catch (err: unknown) {
             if (axios.isAxiosError(err)) {
@@ -62,7 +63,6 @@ export default function RegisterStudent() {
             } else {
                 setError("Registration failed");
             }
-            console.error("Registration error:", err);
         } finally {
             setLoading(false);
         }
@@ -70,94 +70,111 @@ export default function RegisterStudent() {
 
 
     return (
-        <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow-md">
-            <h1 className="text-2xl font-bold mb-4">Student Registration</h1>
+        <div className="min-h-screen bg-background flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+            <div className="sm:mx-auto sm:w-full sm:max-w-md">
+                <div className="flex justify-center mb-6">
+                    <div className="h-12 w-12 bg-primary rounded-lg flex items-center justify-center shadow-lg">
+                        <span className="text-white font-bold text-2xl">C</span>
+                    </div>
+                </div>
+                <h2 className="mt-2 text-center text-3xl font-extrabold text-text">
+                    Create your account
+                </h2>
+                <p className="mt-2 text-center text-sm text-gray-600">
+                    Already have an account?{' '}
+                    <Link to="/auth/login" className="font-medium text-primary hover:text-primary/80">
+                        Sign in
+                    </Link>
+                </p>
+            </div>
 
-            {error && (
-                <div className="bg-red-100 text-red-700 p-2 mb-4 rounded">{error}</div>
-            )}
+            <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+                <Card className="py-8 px-4 sm:px-10">
+                    <form className="space-y-6" onSubmit={submit}>
+                        {error && (
+                            <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
+                                <div className="flex">
+                                    <div className="ml-3">
+                                        <p className="text-sm text-red-700">{error}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
-            <form onSubmit={submit} className="space-y-4">
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={form.email}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                    required
-                />
+                        <Input
+                            label="Full Name"
+                            name="full_name"
+                            value={form.full_name}
+                            onChange={handleChange}
+                            required
+                        />
 
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={form.password}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                    required
-                />
+                        <Input
+                            label="Email Address"
+                            type="email"
+                            name="email"
+                            value={form.email}
+                            onChange={handleChange}
+                            required
+                        />
 
-                <input
-                    type="text"
-                    name="full_name"
-                    placeholder="Full Name"
-                    value={form.full_name}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                    required
-                />
+                        <Input
+                            label="National ID"
+                            name="national_id"
+                            value={form.national_id}
+                            onChange={handleChange}
+                            required
+                        />
 
-                <input
-                    type="text"
-                    name="national_id"
-                    placeholder="National ID"
-                    value={form.national_id}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                    required
-                />
+                        <Input
+                            label="Password"
+                            type="password"
+                            name="password"
+                            value={form.password}
+                            onChange={handleChange}
+                            required
+                        />
 
-                <input
-                    type="text"
-                    name="institution"
-                    placeholder="Institution"
-                    value={form.institution}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                    required
-                />
+                        <Input
+                            label="Institution"
+                            name="institution"
+                            value={form.institution}
+                            onChange={handleChange}
+                            required
+                        />
 
-                <input
-                    type="text"
-                    name="course"
-                    placeholder="Course"
-                    value={form.course}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                    required
-                />
+                        <Input
+                            label="Course"
+                            name="course"
+                            value={form.course}
+                            onChange={handleChange}
+                            required
+                        />
 
-                <input
-                    type="number"
-                    name="year_of_study"
-                    placeholder="Year of Study"
-                    min={1}
-                    max={6}
-                    value={form.year_of_study}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                    required
-                />
+                        <Input
+                            label="Year of Study"
+                            type="number"
+                            name="year_of_study"
+                            min={1}
+                            max={6}
+                            value={form.year_of_study}
+                            onChange={handleChange}
+                            required
+                        />
 
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
-                >
-                    {loading ? "Registering..." : "Register"}
-                </button>
-            </form>
+                        <div>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                isLoading={loading}
+                                variant="primary"
+                            >
+                                Register
+                            </Button>
+                        </div>
+                    </form>
+                </Card>
+            </div>
         </div>
     );
 }

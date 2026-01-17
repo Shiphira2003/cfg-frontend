@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getMyApplications } from '../../api/student.api';
 import { TableContainer, TableHead, TableBody, TableRow, TableHeaderCell, TableCell } from '../../components/Table';
 import { Badge } from '../../components/Badge';
@@ -7,6 +8,7 @@ import { Card } from '../../components/Card';
 import { Modal } from '../../components/Modal';
 
 const MyApplications: React.FC = () => {
+    const navigate = useNavigate();
     const [applications, setApplications] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedApp, setSelectedApp] = useState<any>(null);
@@ -51,7 +53,10 @@ const MyApplications: React.FC = () => {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold text-gray-900">My Applications</h1>
-                <Button size="sm">
+                <Button
+                    size="sm"
+                    onClick={() => navigate('/student/apply')}
+                >
                     Start New Application
                 </Button>
             </div>

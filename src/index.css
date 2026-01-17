@@ -1,2 +1,18 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary: #1A365D;
+  --color-action: #38A169;
+  --color-background: #F4F7F6;
+  --color-surface: #FFFFFF;
+  --color-text: #2D3748;
+  --color-accent: #D69E2E;
+  
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}

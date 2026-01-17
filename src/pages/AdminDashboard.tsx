@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getApplications, updateApplicationStatus, registerAdmin } from "../api/admin.api";
+import { Card } from "../components/Card";
+import { Badge } from "../components/Badge";
+import { Button } from "../components/Button";
+import { TableContainer, TableHead, TableBody, TableRow, TableHeaderCell, TableCell } from "../components/Table";
 
 type Application = {
     id: number;
@@ -114,103 +118,157 @@ export default function AdminDashboard() {
     // ----------------------------
 
     return (
-        <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-
-            {/* Status Filter */}
-            <div className="mb-4">
-                <label>Filter by status: </label>
-                <select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                    className="border p-1"
-                >
-                    <option value="">All</option>
-                    <option value="PENDING">Pending</option>
-                    <option value="APPROVED">Approved</option>
-                    <option value="REJECTED">Rejected</option>
-                </select>
+        <div className="space-y-6">
+            <div className="flex justify-between items-center">
+                <h1 className="text-2xl font-bold text-text">Admin Portal</h1>
             </div>
 
-            {/* Applications Table */}
-            <table className="w-full border border-gray-300 mb-4">
-                <thead>
-                <tr>
-                    <th className="border p-2">Name</th>
-                    <th className="border p-2">Institution</th>
-                    <th className="border p-2">Course</th>
-                    <th className="border p-2">Year</th>
-                    <th className="border p-2">Amount Requested</th>
-                    <th className="border p-2">Status</th>
-                    <th className="border p-2">TAADA</th>
-                    <th className="border p-2">Documents</th>
-                    <th className="border p-2">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {applications.length > 0 ? (
-                    applications.map((app) => (
-                        <tr key={app.id}>
-                            <td className="border p-2">{app.full_name}</td>
-                            <td className="border p-2">{app.institution}</td>
-                            <td className="border p-2">{app.course}</td>
-                            <td className="border p-2">{app.year_of_study}</td>
-                            <td className="border p-2">{app.amount_requested}</td>
-                            <td className="border p-2">{app.status}</td>
-                            <td className="border p-2">{app.taada_flag}</td>
-                            <td className="border p-2">
-                                {app.document_url.map((url, idx) => (
-                                    <a key={idx} href={`http://localhost:5000/${url}`} target="_blank" rel="noreferrer">
-                                        Document {idx + 1}
-                                    </a>
-                                ))}
-                            </td>
-                            <td className="border p-2 space-x-2">
-                                {app.status === "PENDING" && (
-                                    <>
-                                        <button
-                                            className="bg-green-600 text-white px-2 py-1"
-                                            onClick={() => handleStatusChange(app.id, "APPROVED")}
-                                        >
-                                            Approve
-                                        </button>
+            {/* Stats Cards (Optional placeholder) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card>
+                    <div className="pb-2">
+                        <h3 className="text-sm font-medium text-gray-500">Total Applications</h3>
+                    </div>
+                    <div className="text-2xl font-bold text-text">{applications.length}</div>
+                </Card>
+                <Card>
+                    <div className="pb-2">
+                        <h3 className="text-sm font-medium text-gray-500">Pending Review</h3>
+                    </div>
+                    <div className="text-2xl font-bold text-yellow-600">
+                        {applications.filter(a => a.status === 'PENDING').length}
+                    </div>
+                </Card>
+                <Card>
+                    <div className="pb-2">
+                        <h3 className="text-sm font-medium text-gray-500">Approved</h3>
+                    </div>
+                    <div className="text-2xl font-bold text-green-600">
+                        {applications.filter(a => a.status === 'APPROVED').length}
+                    </div>
+                </Card>
+            </div>
 
-                                        <button
-                                            className="bg-red-600 text-white px-2 py-1"
-                                            onClick={() => handleStatusChange(app.id, "REJECTED")}
-                                        >
-                                            Reject
-                                        </button>
-                                    </>
-                                )}
+            <Card noPadding className="overflow-hidden">
+                <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <div className="flex items-center gap-2">
+                        <label className="text-sm font-medium text-gray-700">Filter Status:</label>
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className="border-gray-300 rounded-md text-sm focus:ring-primary focus:border-primary shadow-sm"
+                        >
+                            <option value="">All Applications</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="APPROVED">Approved</option>
+                            <option value="REJECTED">Rejected</option>
+                        </select>
+                    </div>
+                </div>
 
-                                {app.status === "APPROVED" && (
-                                    <button
-                                        className="bg-blue-600 text-white px-2 py-1"
-                                        onClick={() => navigate(`/admin/applications/${app.id}/audit-logs`)}
-                                    >
-                                        Audit Logs
-                                    </button>
-                                )}
-                            </td>
+                <TableContainer>
+                    <TableHead>
+                        <TableRow>
+                            <TableHeaderCell>Name</TableHeaderCell>
+                            <TableHeaderCell>Institution</TableHeaderCell>
+                            <TableHeaderCell>Course</TableHeaderCell>
+                            <TableHeaderCell>Amount</TableHeaderCell>
+                            <TableHeaderCell>Status</TableHeaderCell>
+                            <TableHeaderCell>Documents</TableHeaderCell>
+                            <TableHeaderCell>Actions</TableHeaderCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {applications.length > 0 ? (
+                            applications.map((app) => (
+                                <TableRow key={app.id}>
+                                    <TableCell className="font-medium text-gray-900">{app.full_name}</TableCell>
+                                    <TableCell>{app.institution}</TableCell>
+                                    <TableCell>
+                                        <div>{app.course}</div>
+                                        <div className="text-xs text-gray-500">Year {app.year_of_study}</div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="font-medium">REQ: {app.amount_requested}</div>
+                                        {app.amount_allocated > 0 && (
+                                            <div className="text-xs text-green-600">ALL: {app.amount_allocated}</div>
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        <Badge variant={
+                                            app.status === 'APPROVED' ? 'success' :
+                                                app.status === 'REJECTED' ? 'error' : 'warning'
+                                        }>
+                                            {app.status}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex flex-col space-y-1">
+                                            {app.document_url.map((url, idx) => (
+                                                <a
+                                                    key={idx}
+                                                    href={`http://localhost:5000/${url}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="text-primary hover:text-primary/80 text-xs hover:underline flex items-center gap-1"
+                                                >
+                                                    <span className="w-4 h-4 inline-flex items-center justify-center rounded bg-primary/10">📄</span>
+                                                    Doc {idx + 1}
+                                                </a>
+                                            ))}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center gap-2">
+                                            {app.status === "PENDING" && (
+                                                <>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="action"
+                                                        onClick={() => handleStatusChange(app.id, "APPROVED")}
+                                                    >
+                                                        Approve
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="danger"
+                                                        onClick={() => handleStatusChange(app.id, "REJECTED")}
+                                                    >
+                                                        Reject
+                                                    </Button>
+                                                </>
+                                            )}
 
-                        </tr>
-                    ))
-                ) : (
-                    <tr>
-                        <td colSpan={9} className="border p-2 text-center">
-                            No applications found
-                        </td>
-                    </tr>
-                )}
-                </tbody>
-            </table>
-
+                                            {app.status === "APPROVED" && (
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    onClick={() => navigate(`/admin/applications/${app.id}/audit-logs`)}
+                                                >
+                                                    View Logs
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                                    No applications found matching your criteria.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </TableContainer>
+            </Card>
 
             {/* Register Admin Section */}
-            <div className="mt-6 p-4 border rounded">
-                <h2 className="text-xl font-semibold mb-2">Register New Admin</h2>
-                <AdminRegisterForm onRegister={fetchApplications} />
+            <div className="mt-8">
+                <Card>
+                    <h2 className="text-lg font-semibold text-text mb-4">Register New Admin</h2>
+                    <AdminRegisterForm onRegister={fetchApplications} />
+                </Card>
             </div>
         </div>
     );

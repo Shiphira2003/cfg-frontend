@@ -3,7 +3,7 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 
-const StudentLayout: React.FC = () => {
+const AdminLayout: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [isCollapsed, setIsCollapsed] = React.useState(false);
@@ -25,11 +25,8 @@ const StudentLayout: React.FC = () => {
                 className={`${isCollapsed ? 'w-20' : 'w-64'} bg-surface border-r border-gray-200 hidden md:flex flex-col fixed h-full z-40 transition-all duration-300 ease-in-out`}
             >
                 <div className="h-16 flex items-center px-4 border-b border-gray-100 relative">
-                    <Link to="/" className={`flex items-center gap-2 overflow-hidden transition-all duration-300 ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>
-                        <div className="w-8 h-8 bg-primary rounded-lg flex-shrink-0 flex items-center justify-center shadow-md">
-                            <span className="text-white font-bold text-xl">C</span>
-                        </div>
-                        {!isCollapsed && <span className="font-bold text-lg text-primary whitespace-nowrap">CFG Portal</span>}
+                    <Link to="/admin" className={`flex items-center gap-2 overflow-hidden transition-all duration-300 ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>
+                        {!isCollapsed && <span className="font-bold text-lg text-primary whitespace-nowrap">Admin Portal</span>}
                     </Link>
 
                     {/* Toggle Button */}
@@ -44,10 +41,7 @@ const StudentLayout: React.FC = () => {
                 <div className="flex-1 overflow-y-auto py-4 overflow-x-hidden">
                     <nav className="px-3 space-y-1">
                         {[
-                            { to: '/student/dashboard', icon: '📊', label: 'Dashboard' },
-                            { to: '/student/applications', icon: '📂', label: 'My Applications' },
-                            { to: '/student/apply', icon: '✨', label: 'New Application' },
-                            { to: '/student/profile', icon: '👤', label: 'My Profile' }
+                            { to: '/admin', icon: '📊', label: 'Dashboard' }
                         ].map((link) => (
                             <Link
                                 key={link.to}
@@ -77,13 +71,13 @@ const StudentLayout: React.FC = () => {
             {/* Main Wrapper */}
             <div className={`flex-1 flex flex-col ${isCollapsed ? 'md:ml-20' : 'md:ml-64'} min-h-screen transition-all duration-300 ease-in-out`}>
                 <Header
-                    user={{ name: "Student User" }}
-                    onMenuClick={() => console.log("Toggle menu")} // Placeholder for mobile menu logic
+                    user={{ name: "Admin User" }}
+                    onMenuClick={() => console.log("Toggle menu")}
                 />
 
                 {/* Main Content */}
                 <main className="flex-1 overflow-y-auto p-4 sm:p-8 bg-background">
-                    <div className="max-w-5xl mx-auto">
+                    <div className="max-w-7xl mx-auto">
                         <Outlet />
                     </div>
                 </main>
@@ -94,4 +88,4 @@ const StudentLayout: React.FC = () => {
     );
 };
 
-export default StudentLayout;
+export default AdminLayout;
